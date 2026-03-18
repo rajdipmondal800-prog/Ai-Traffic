@@ -1,4 +1,4 @@
-# EcoTraffic AI 🌍🚗
+# EcoTraffic AI 
 **Smart Traffic Prediction for Reducing Urban Carbon Emissions**
 
 ## 📖 Project Description
@@ -7,10 +7,10 @@
 By leveraging predictive AI and real-time data visualization, EcoTraffic AI anticipates traffic buildup before it happens and dynamically suggests **Eco-Routes**—alternative paths optimized not just for travel time, but specifically to minimize carbon footprint.
 
 ### 🌟 Why This Matters (The Environmental Impact)
-*   **🚗 Reduces Traffic Congestion:** Smooths out traffic flow by distributing vehicles uniformly across alternative city networks.
-*   **⛽ Lowers Fuel Consumption:** Prevents engine idling and inefficient stop-and-go driving.
-*   **🌍 Decreases CO₂ Emissions & Air Pollution:** Directly cuts down the amount of greenhouse gases released into the atmosphere.
-*   **🌳 Empowers City Planning:** Provides a comprehensive dashboard for city planners to identify high-pollution traffic choke points and design eco-friendly transport infrastructure.
+*   ** Reduces Traffic Congestion:** Smooths out traffic flow by distributing vehicles uniformly across alternative city networks.
+*   ** Lowers Fuel Consumption:** Prevents engine idling and inefficient stop-and-go driving.
+*   ** Decreases CO₂ Emissions & Air Pollution:** Directly cuts down the amount of greenhouse gases released into the atmosphere.
+*   **Empowers City Planning:** Provides a comprehensive dashboard for city planners to identify high-pollution traffic choke points and design eco-friendly transport infrastructure.
 
 ## ✨ Key Features
 1.  **Real-Time AI Predictions:** Live dashboards simulating current congestion levels and air quality indices.
@@ -25,7 +25,7 @@ By leveraging predictive AI and real-time data visualization, EcoTraffic AI anti
 *   **Mapping UI:** Leaflet & react-leaflet
 *   **Icons:** Lucide-React
 
-## 🚀 How to Run Locally
+##  How to Run Locally
 1. Clone the repository.
 2. Install dependencies:
    ```bash
