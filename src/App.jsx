@@ -3,7 +3,7 @@ import {
   Leaf, Map, BarChart3, Activity, Zap, Car, AlertTriangle, TrendingDown,
   Wind, CloudRain, CalendarDays, Construction, Ambulance, Clock, Flag,
   Award, HelpCircle, ThumbsUp, MapPin, Siren, ChevronRight, X, ShieldAlert,
-  ParkingCircle
+  ParkingCircle, Terminal, BrainCircuit
 } from 'lucide-react';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler
@@ -89,6 +89,16 @@ function App() {
   // Simulation Vehicles State
   const [simProgress, setSimProgress] = useState(0);
 
+  // Agentic AI & What-If Enhancements
+  const [aiLogs, setAiLogs] = useState([
+    { time: new Date().toLocaleTimeString(), text: "Agentic AI initialized. Global grid monitoring active." }
+  ]);
+  const [signalTimers, setSignalTimers] = useState({ 1: 45, 2: 45 });
+
+  const addAiLog = (text) => {
+    setAiLogs(prev => [{ time: new Date().toLocaleTimeString(), text }, ...prev].slice(0, 15));
+  };
+
   // Global Real-time tick
   useEffect(() => {
     const interval = setInterval(() => {
@@ -97,6 +107,35 @@ function App() {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  // Agentic AI Decision Engine
+  useEffect(() => {
+    if (activeTab !== 'simulation') return;
+    
+    if (isRaining) {
+      addAiLog("Detected Heavy Rain. Adjusted green cycle +15s to prevent hydroplaning congestion.");
+      setSignalTimers({ 1: 60, 2: 60 });
+    } else {
+      addAiLog("Weather clear. Normalized traffic signal cycles to standard 45s.");
+      setSignalTimers({ 1: 45, 2: 45 });
+    }
+  }, [isRaining, activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== 'simulation') return;
+    if (accidentActive) {
+      addAiLog("CRITICAL: Collision detected on Route 1. Rerouting 30% traffic to Eco-Route.");
+    }
+  }, [accidentActive, activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== 'simulation') return;
+    if (emergencyMode) {
+      addAiLog("EMERGENCY OVERRIDE: Forcing Safe Corridor for Ambulance. All interfering signals locked to RED.");
+    } else {
+      addAiLog("Emergency unit cleared. Releasing Safe Corridor override.");
+    }
+  }, [emergencyMode, activeTab]);
 
   // Animation Loop for Simulation View
   useEffect(() => {
@@ -200,7 +239,7 @@ function App() {
             <div className="nav-menu">
               <button className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
                 <Activity size={16} style={{display:'inline', marginRight:'6px'}}/>
-                Dashboard
+                Data Visualization Dashboard
               </button>
               <button className={`nav-btn ${activeTab === 'simulation' ? 'active' : ''}`} onClick={() => setActiveTab('simulation')}>
                 <Map size={16} style={{display:'inline', marginRight:'6px'}}/>
@@ -260,9 +299,9 @@ function App() {
               <div className="dashboard-col">
                 <div className="glass-panel">
                   <div className="panel-header-row">
-                    <h2 className="panel-title mb-0 border-0 pb-0">
+                    <h2 className="panel-title mb-0 border-0 pb-0" style={{fontSize: '1.2rem'}}>
                       <BarChart3 size={20} color="#3b82f6" />
-                      AI Traffic Prediction
+                      Machine Learning Prediction Model
                     </h2>
                     <div className="time-tabs">
                       {/* Feature 7: Prediction Slider/Tabs */}
@@ -282,10 +321,12 @@ function App() {
                 <div className="alert-popup explainable-ai-card">
                   <HelpCircle className="alert-icon" size={24} color="#a855f7" />
                   <div className="alert-content">
-                    <h4 style={{ color: '#a855f7' }}>AI Insight Engine</h4>
+                    <h4 style={{ color: '#a855f7' }}>Route Optimization Suggestions</h4>
+                    <p style={{marginBottom: '0.5rem'}}>
+                      <strong>Detected:</strong> 90% likelihood of severe jam on Malda Highway in 15 mins due to <span className="highlight-tag">Heavy Rain</span> + <span className="highlight-tag">Rush Hour</span>.
+                    </p>
                     <p>
-                      <strong>Malda Highway:</strong> 90% likelihood of severe jam in 15 mins due to 
-                      <span className="highlight-tag">Heavy Rain</span> + <span className="highlight-tag">Rush Hour</span>
+                      <strong>AI Suggestion:</strong> Rerouting commercial traffic to Eco-Route B to save <span className="highlight-tag" style={{background: '#10b981'}}>1.2 kg CO₂</span> per vehicle.
                     </p>
                   </div>
                 </div>
@@ -334,26 +375,12 @@ function App() {
         {activeTab === 'simulation' && (
           <div className="fade-in sim-tab-wrapper">
             
-            <div className="sim-controls glass-panel mb-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h2><Activity size={24} style={{display:'inline', verticalAlign:'middle'}} color="#3b82f6"/> City Interactive Simulation</h2>
-                <p style={{color: '#a0aec0', fontSize: '0.9rem', marginTop: '0.5rem'}}>Control the environment directly and watch AI adapt in real-time.</p>
-              </div>
-              
-              <div className="sim-buttons" style={{ display: 'flex', gap: '1rem' }}>
-                {/* Feature 9: Weather */}
-                <button className={`btn ${isRaining ? 'btn-primary' : 'btn-secondary'}`} onClick={() => setIsRaining(!isRaining)} style={{background: isRaining ? '#3b82f6' : ''}}>
-                  {isRaining ? <CloudRain size={18}/> : <Wind size={18}/>}
-                  {isRaining ? 'Heavy Rain (Active)' : 'Weather: Clear'}
-                </button>
-                
-                {/* Feature 6: Accidents */}
-                <button className={`btn ${accidentActive ? 'btn-primary' : 'btn-secondary'}`} onClick={() => setAccidentActive(!accidentActive)} style={{background: accidentActive ? '#ef4444' : ''}}>
-                  <ShieldAlert size={18}/>
-                  {accidentActive ? 'Accident Detected!' : 'Trigger Accident'}
-                </button>
-
-                {/* Feature 1: Emergency Vehicle */}
+            <div className="sim-controls glass-panel mb-4">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div>
+                  <h2><BrainCircuit size={28} style={{display:'inline', verticalAlign:'middle', marginRight:'8px'}} color="#a855f7"/>What-If Simulation Engine</h2>
+                  <p style={{color: '#a0aec0', fontSize: '0.95rem', marginTop: '0.5rem'}}>Test city scenarios and watch the Agentic AI adapt in real-time.</p>
+                </div>
                 <button className={`btn ${emergencyMode ? 'btn-primary' : 'btn-secondary'}`} onClick={() => {
                   setEmergencyMode(!emergencyMode);
                   if(!emergencyMode) setSimProgress(0); // Reset progress to start of route
@@ -362,9 +389,40 @@ function App() {
                   {emergencyMode ? 'Emergency Priority ON' : 'Spawn Ambulance'}
                 </button>
               </div>
+
+              <div className="scenario-builder">
+                <div>
+                  <label style={{display:'block', marginBottom:'0.5rem', color:'#a0aec0', fontSize:'0.85rem'}}>Weather Condition</label>
+                  <select className="scenario-select" value={isRaining ? 'rain' : 'clear'} onChange={(e) => setIsRaining(e.target.value === 'rain')}>
+                    <option value="clear">Clear Skies</option>
+                    <option value="rain">Heavy Rain / Monsoon</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{display:'block', marginBottom:'0.5rem', color:'#a0aec0', fontSize:'0.85rem'}}>Road Incidents</label>
+                  <select className="scenario-select" value={accidentActive ? 'accident' : 'none'} onChange={(e) => setAccidentActive(e.target.value === 'accident')}>
+                    <option value="none">No Incidents</option>
+                    <option value="accident">Major Highway Collision</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{display:'block', marginBottom:'0.5rem', color:'#a0aec0', fontSize:'0.85rem'}}>Time of Day</label>
+                  <select className="scenario-select" onChange={(e) => {
+                    if (e.target.value === 'rush') {
+                      addAiLog("Rush Hour detected. Activating peak-time congestion algorithms.");
+                    } else {
+                      addAiLog("Off-peak hours. Optimizing lights for fuel economy.");
+                    }
+                  }}>
+                    <option value="normal">Normal Hours</option>
+                    <option value="rush">Rush Hour (Peak)</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <div className="sim-map-large glass-panel" style={{ height: '600px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '1.5rem', height: '600px' }}>
+              <div className="sim-map-large glass-panel" style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               
               {/* Contextual UI Overlays for Simulation events */}
               <div style={{display:'flex', gap:'1rem', minHeight: '60px'}}>
@@ -397,20 +455,27 @@ function App() {
                   
                   {/* Routes */}
                   <Polyline positions={standardRoute} color="#475569" weight={6} opacity={0.4} />
-                  {emergencyMode && <Polyline positions={emergencyRoute} color="#f59e0b" weight={4} dashArray="10, 10" className="path-anim" />}
+                  {emergencyMode && <Polyline positions={emergencyRoute} color="#f59e0b" weight={10} opacity={0.4} className="safe-corridor" />}
+                  {emergencyMode && <Polyline positions={emergencyRoute} color="#fcd34d" weight={4} dashArray="15, 15" className="path-anim" />}
                   
                   {/* Feature 3: Traffic Lights */}
                   {trafficNodes.map(node => (
-                    <CircleMarker 
+                    <Marker 
                       key={node.id} 
-                      center={node.pos} 
-                      radius={8} 
-                      color={signalStates[node.id] === 'green' ? '#10b981' : '#ef4444'} 
-                      fillColor={signalStates[node.id] === 'green' ? '#10b981' : '#ef4444'} 
-                      fillOpacity={0.8}
+                      position={node.pos}
+                      icon={L.divIcon({
+                        className: 'smart-signal',
+                        html: `
+                          <div style="display:flex; align-items:center; transform: translate(-30%, -50%);">
+                            <div style="background: ${signalStates[node.id] === 'green' ? '#10b981' : '#ef4444'}; width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 10px ${signalStates[node.id] === 'green' ? '#10b981' : '#ef4444'}; border: 2px solid white;"></div>
+                            <div class="signal-timer-badge">${signalTimers[node.id]}s AI</div>
+                          </div>
+                        `,
+                        iconSize: [80, 20]
+                      })}
                     >
                       <Popup>Smart Light {node.id}: {signalStates[node.id].toUpperCase()}</Popup>
-                    </CircleMarker>
+                    </Marker>
                   ))}
 
                   {/* Feature 8: Smart Parking */}
@@ -452,6 +517,25 @@ function App() {
                   )}
 
                 </MapContainer>
+              </div>
+              </div>
+
+              {/* Agentic AI Log Panel */}
+              <div className="glass-panel" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <h3 className="ai-log-header">
+                  <Terminal size={18} /> Agentic AI Live Feed
+                </h3>
+                <p style={{color: '#a0aec0', fontSize: '0.8rem', marginBottom: '1rem'}}>
+                  Autonomous Manager resolving grid anomalies using predictive routing.
+                </p>
+                <div className="ai-log-panel" style={{ flexGrow: 1, height: 'auto', marginTop: 0 }}>
+                  {aiLogs.map((log, index) => (
+                    <div key={index} className="ai-log-entry">
+                      <span className="ai-log-time">[{log.time}]</span>
+                      {log.text}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
